@@ -1,4 +1,4 @@
-ABB BigMart Sales Prediction - Approach Note
+ABB's BigMart Sales Prediction - Approach Note
 ================================================
 
 1. Data Loading and Formation.
