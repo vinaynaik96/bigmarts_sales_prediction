@@ -1,0 +1,49 @@
+ABB BigMart Sales Prediction - Approach Note
+================================================
+
+1. Data Loading and Formation.
+   - Uploaded the train and test data in DATA Folder.
+   - Loaded train and test dataset using pandas.
+   - Both datasets are combined for better understand for preprocessing and feature engineering.
+
+2. Exploratary Data Analysis and Feature Engineering:
+   a. Standardization & Cleaning:
+      - 'Item_Fat_Content' is standardized from 3 category to 2 category i.e, 'LF' and 'low fat' become 'Low Fat'.
+      - 'Item_Type_Combined' is created from the first letter of 'Item_Identifier' as per the business domain rule.
+      -  For non consumable items like 'Item_Fat_Content' is set to 'Non-Edible' based on obervation of product type and fat content.
+
+   b. Missing Value Imputation:
+      - 'Item_Weight' missing values using the mean weight of 'Item_Type_Combined' group is imputed.
+      - 'Item_Visibility' values of flagged to zero replaced with NaN.
+      - 'Outlet_Size' missing values are imputed using the mode of outlets.
+
+   c. Feature Creation:
+      - 'Outlet_Years' is calculated as the number of years since the outlet was established which is 2013 than subtracted so i'll get to know about the age of the outlet.
+      -  Log transformations applied to 'Item_MRP' and 'Item_Visibility' to reduce skewness of the original distribution.
+      - 'Item_Visibility_MeanRatio' is created as the ratio of an item's visibility to its group mean.
+      - Several interaction features are created like 'MRP_Outlet_Years', 'MRP_Visibility' and 'MRP_Weight'.
+      - 'Item_Category' is created using the first two letters of 'Item_Identifier'.
+   
+   d. Encoding:
+      - Target encoding used for 'Item_Outlet_Sales'. 
+      - Ordinal encoding used'Item_Category'.
+      - Mean sales encoding used for 'Type_Combined_MeanSales', 'Outlet_MeanSales' and 'Category_MeanSales'.
+      - Label encoding for remaining categorical features.
+
+3. Model Preparation:
+   - The final dataset is selected after applying preprocessing and feature engineering.
+   - KNN imputation is used to fill any remaining missing values in the features.
+   - Features are scaled using MinMaxScaler for better model performance.
+   - The data is splited into training and validation sets in 80:20 ration.
+
+4. Model Training & Tuning:
+   - All popular regression model tried and evaluation matric is RMSE choosen for understanding as a baseline model which will perform better.
+   - The RandomForestRegressor and GradientBoosing algorithm is chosen for its ability to handle non-linear relationships and this performed way better than any other algorithm.
+   - Hyperparameter tuning is performed using GridSearchCV with cross validation 3.
+   - Both model gave good result but RandomForestRegressor was better with RMSE (1020) with parameter (n_estimators=400, max_depth=6, min_samples_split=10, min_samples_leaf=2).
+   - The lowest root mean squared error (RMSE) on the validation set RandomForestRegressor performed better so choosen this model.
+
+5. Prediction & Output:
+   - The trained model predicts 'Item_Outlet_Sales' for the test set.
+   - The predictions are formatted into a DataFrame with 'Item_Identifier', 'Outlet_Identifier' and the predicted sales.
+   - The results are saved as 'ABB_submission.csv' for submission.
